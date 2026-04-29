@@ -1,0 +1,52 @@
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+/services/ingestion/ingestion
+/services/stream-processor/stream-processor
+
+# Go
+/services/ingestion/vendor/
+/services/stream-processor/vendor/
+*.test
+*.out
+coverage.html
+
+# Node / TS
+node_modules/
+services/persistence/node_modules/
+*.tsbuildinfo
+dist/
+build/
+.env
+.env.local
+.env.*.local
+
+# Claude Code
+.claude/settings.local.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local spool / runtime
+*.db
+/data/
+spool/
+
+# Logs
+*.log
+logs/
+
+# Generated
+api/proto/gen/
+*.pb.go
+*.pb.ts

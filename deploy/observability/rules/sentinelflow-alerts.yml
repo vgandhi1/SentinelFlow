@@ -1,0 +1,29 @@
+groups:
+  - name: sentinelflow-stack
+    rules:
+      - alert: TargetDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Prometheus target down"
+          description: "{{ $labels.job }} target {{ $labels.instance }} has been down for more than 2 minutes."
+
+      - alert: HighContainerCpu
+        expr: rate(container_cpu_usage_seconds_total{name!="", image!=""}[5m]) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High container CPU usage"
+          description: "Container {{ $labels.name }} is using >80% CPU for 5 minutes."
+
+      - alert: HighContainerMemory
+        expr: (container_memory_working_set_bytes{name!="", image!=""} / container_spec_memory_limit_bytes{name!="", image!=""}) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High container memory usage"
+          description: "Container {{ $labels.name }} is using >90% of its memory limit for 5 minutes."

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package sentinelflow.telemetry;
+
+option go_package = "sentinelflow/api/proto;proto";
+
+// SensorTelemetry is the canonical event from factory-floor sensors (vibration, torque, heat, etc.).
+// Idempotency: idempotency_key (UUID + nanosecond timestamp) is used for UPSERT in persistence.
+message SensorTelemetry {
+  string idempotency_key   = 1;  // UUID + nanosecond timestamp, generated at sensor/edge
+  int64  timestamp_unix_ns = 2;
+  string sensor_id         = 3;
+  string asset_id          = 4;  // Machine/PLC identifier
+  string metric_name       = 5;  // e.g. "vibration_x", "torque", "temperature"
+  double value             = 6;
+  map<string, string> tags = 7;  // Optional dimensions
+  bool   critical          = 8;  // If true, not dropped during load shedding
+}
+
+// Batch for efficient Kafka publishing from ingestion workers
+message TelemetryBatch {
+  repeated SensorTelemetry events = 1;
+}
