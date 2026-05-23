@@ -4,6 +4,11 @@
 
 SentinelFlow ingests high-frequency sensor data from thousands of PLCs and OPC UA nodes, validates and enriches it in real time, and serves it through a GraphQL API powering Digital Twin dashboards — all with sub-second latency and graceful degradation when infrastructure hiccups.
 
+[![Live Presentation](https://img.shields.io/badge/presentation-live-brightgreen?style=flat-square)](https://vgandhi1.github.io/SentinelFlow/)
+[![View Slides](https://img.shields.io/badge/slides-presentation.html-06b6d4?style=flat-square)](presentation.html)
+
+📊 **[Live Presentation](https://vgandhi1.github.io/SentinelFlow/)** · [Static slides](presentation.html) *(GitHub Pages — enable **Pages → Deploy from branch → `gh-pages`** after first push)*
+
 [![CI](https://github.com/vgandhi1/SentinelFlow/actions/workflows/ci.yml/badge.svg)](https://github.com/vgandhi1/SentinelFlow/actions/workflows/ci.yml)
 ![Go](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Node.js%2020-3178C6?logo=typescript&logoColor=white)
@@ -101,6 +106,7 @@ Dashboards and alert rules are pre-provisioned under `deploy/observability/`.
 
 ```
 SentinelFlow/
+├── presentation.html       # Static slide deck (GitHub Pages)
 ├── api/proto/              # Protobuf definitions (telemetry schema)
 ├── services/
 │   ├── ingestion/          # Go — MQTT → Kafka edge service
