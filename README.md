@@ -7,7 +7,7 @@ SentinelFlow ingests high-frequency sensor data from thousands of PLCs and OPC U
 [![Live Presentation](https://img.shields.io/badge/presentation-live-brightgreen?style=flat-square)](https://vgandhi1.github.io/SentinelFlow/)
 [![View Slides](https://img.shields.io/badge/slides-presentation.html-06b6d4?style=flat-square)](presentation.html)
 
-📊 **[Live Presentation](https://vgandhi1.github.io/SentinelFlow/)** · [Static slides](presentation.html) *(Pages: **Settings → Pages → Source: GitHub Actions**, then run **Deploy GitHub Pages** workflow)*
+📊 **[Live Presentation](https://vgandhi1.github.io/SentinelFlow/)** · [Static slides](presentation.html) *(Pages: **Settings → Pages → Deploy from branch → `gh-pages` / (root)** — not `main`; then run **Deploy GitHub Pages** workflow)*
 
 [![CI](https://github.com/vgandhi1/SentinelFlow/actions/workflows/ci.yml/badge.svg)](https://github.com/vgandhi1/SentinelFlow/actions/workflows/ci.yml)
 ![Go](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go&logoColor=white)
