@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SentinelFlow — Industrial IIoT Telemetry Platform</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050a0f;--bg-card:#0a1419;--bg-card2:#0f1e28;
+  --accent:#06b6d4;--accent2:#3b82f6;--accent3:#10b981;
+  --amber:#f59e0b;--red:#ef4444;
+  --text:#f0f9ff;--muted:#94a3b8;
+  --border:rgba(6,182,212,.22);--glow:rgba(6,182,212,.08);
+  --mono:'JetBrains Mono','Fira Code',Consolas,monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;height:52px;
+  background:rgba(5,10,15,.88);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.08em}
+.nav-links{display:flex;gap:4px;flex-wrap:wrap}
+.nav-links a{
+  font-size:10px;color:var(--muted);text-decoration:none;padding:5px 10px;
+  border-radius:6px;transition:all .2s;letter-spacing:.04em;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--text);background:rgba(6,182,212,.12)}
+
+.slide{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;padding:88px 72px 72px;
+  position:relative;border-bottom:1px solid rgba(6,182,212,.08);
+}
+.slide-num{
+  position:absolute;top:68px;right:48px;
+  font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.12em;
+}
+.section-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:10px;
+}
+.slide-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-.025em;margin-bottom:8px;line-height:1.2}
+.slide-title span{color:var(--accent)}
+.slide-desc{color:var(--muted);font-size:.9rem;margin-bottom:32px;max-width:720px}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:22px}
+.card h3{font-size:.92rem;font-weight:600;margin-bottom:8px}
+.card p{font-size:.82rem;color:var(--muted);line-height:1.55}
+.bt-cyan{border-top:3px solid var(--accent)}
+.bt-blue{border-top:3px solid var(--accent2)}
+.bt-green{border-top:3px solid var(--accent3)}
+.bt-amber{border-top:3px solid var(--amber)}
+.bt-red{border-top:3px solid var(--red)}
+
+.tag{display:inline-block;font-family:var(--mono);font-size:.68rem;padding:2px 8px;border-radius:4px;font-weight:600;margin:2px}
+.tg-cyan{background:rgba(6,182,212,.15);color:var(--accent)}
+.tg-blue{background:rgba(59,130,246,.15);color:var(--accent2)}
+.tg-green{background:rgba(16,185,129,.15);color:var(--accent3)}
+
+.slide-hero{
+  background:radial-gradient(ellipse 70% 55% at 50% 35%,rgba(6,182,212,.1) 0%,transparent 70%);
+  align-items:center;text-align:center;
+}
+.hero-badge{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);border:1px solid var(--border);border-radius:20px;padding:5px 18px;margin-bottom:22px;background:var(--glow)}
+.hero-h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:900;letter-spacing:-.03em;max-width:860px;line-height:1.08;
+  background:linear-gradient(135deg,#fff 0%,var(--accent) 60%,var(--accent2) 100%);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px}
+.hero-sub{font-size:1rem;color:var(--muted);max-width:640px;margin-bottom:36px}
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.pill{font-family:var(--mono);font-size:10px;padding:5px 12px;border-radius:6px;
+  border:1px solid var(--border);background:var(--bg-card);color:var(--muted)}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:8px;max-width:780px;width:100%}
+.stat-box{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 14px;text-align:center}
+.stat-val{font-family:var(--mono);font-size:1.8rem;font-weight:800;display:block;color:var(--accent)}
+.stat-lbl{font-size:.74rem;color:var(--muted);margin-top:4px}
+
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap}
+.flow-step{
+  flex:1;min-width:90px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;
+  padding:14px 10px;text-align:center;
+}
+.flow-step .si{font-size:1.2rem;margin-bottom:5px;display:block}
+.flow-step .sl{font-size:.76rem;font-weight:600}
+.flow-step .ss{font-size:.68rem;color:var(--muted);margin-top:3px}
+.flow-arrow{display:flex;align-items:center;padding:0 4px;color:var(--accent);font-size:1.1rem}
+
+.arch-diagram{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:14px;
+  padding:28px;font-family:var(--mono);font-size:.72rem;line-height:1.55;
+  overflow-x:auto;white-space:pre;color:var(--muted);
+}
+.arch-diagram .hl{color:var(--accent)}.arch-diagram .hl2{color:var(--accent2)}.arch-diagram .hl3{color:var(--accent3)}
+
+.stack-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.stack-table th{background:var(--bg-card2);color:var(--muted);text-align:left;padding:10px 14px;
+  font-size:.72rem;letter-spacing:.05em;border-bottom:1px solid var(--border);font-family:var(--mono)}
+.stack-table td{padding:11px 14px;border-bottom:1px solid rgba(6,182,212,.06);vertical-align:top}
+.stack-table tr:hover td{background:rgba(6,182,212,.04)}
+
+.reliability-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.rel-item{display:flex;gap:14px;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:18px}
+.rel-icon{font-size:1.4rem;flex-shrink:0}
+.rel-item h4{font-size:.85rem;font-weight:600;margin-bottom:4px}
+.rel-item p{font-size:.78rem;color:var(--muted)}
+
+.slide-final{align-items:center;text-align:center;
+  background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(6,182,212,.07) 0%,transparent 70%)}
+.final-h2{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:900;margin-bottom:14px}
+.final-link{
+  display:inline-block;margin-top:20px;padding:10px 24px;border-radius:8px;
+  background:var(--accent);color:#000;font-weight:700;text-decoration:none;font-size:.85rem;
+}
+.final-link:hover{background:#0891b2}
+
+@media(max-width:900px){
+  .slide{padding:72px 24px 56px}
+  .g2,.g3,.g5,.stat-grid,.reliability-grid{grid-template-columns:1fr}
+  .flow{flex-direction:column}
+  .flow-arrow{transform:rotate(90deg);justify-content:center}
+  nav{padding:0 16px}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">SENTINELFLOW</span>
+  <div class="nav-links">
+    <a href="#title">Intro</a>
+    <a href="#problem">Problem</a>
+    <a href="#arch">Architecture</a>
+    <a href="#services">Services</a>
+    <a href="#flow">Pipeline</a>
+    <a href="#reliability">Reliability</a>
+    <a href="#summary">Summary</a>
+  </div>
+</nav>
+
+<section class="slide slide-hero" id="title">
+  <div class="hero-badge">Industrial IIoT · Factory-Floor Telemetry</div>
+  <h1 class="hero-h1">SentinelFlow</h1>
+  <p class="hero-sub">
+    Ingest high-frequency sensor data from thousands of PLCs and OPC UA nodes,
+    validate and enrich it in real time, and serve Digital Twin dashboards —
+    sub-second latency with graceful degradation when infrastructure hiccups.
+  </p>
+  <div class="pill-row">
+    <span class="pill">Go Microservices</span>
+    <span class="pill">TypeScript API</span>
+    <span class="pill">Kafka Streaming</span>
+    <span class="pill">MQTT · Protobuf</span>
+    <span class="pill">TimescaleDB</span>
+    <span class="pill">Redis Cache</span>
+    <span class="pill">Prometheus · Grafana</span>
+  </div>
+  <div class="stat-grid" style="margin-top:40px">
+    <div class="stat-box"><span class="stat-val">1000s</span><div class="stat-lbl">PLC / OPC UA nodes</div></div>
+    <div class="stat-box"><span class="stat-val">&lt;1s</span><div class="stat-lbl">End-to-end latency</div></div>
+    <div class="stat-box"><span class="stat-val">5</span><div class="stat-lbl">Core services</div></div>
+    <div class="stat-box"><span class="stat-val">DLQ</span><div class="stat-lbl">Replayable failures</div></div>
+  </div>
+</section>
+
+<section class="slide" id="problem">
+  <span class="slide-num">02 / 07</span>
+  <div class="section-label">Problem Statement</div>
+  <h2 class="slide-title">Factory telemetry at <span>scale</span> is hard</h2>
+  <p class="slide-desc">Modern auto plants generate millions of sensor readings per hour across heterogeneous protocols, with zero tolerance for data loss during network blips.</p>
+
+  <div class="g3">
+    <div class="card bt-red">
+      <h3>📡 Protocol Chaos</h3>
+      <p>PLCs speak MQTT + Protobuf. Legacy lines use OPC UA. Each protocol needs a dedicated adapter and schema contract.</p>
+    </div>
+    <div class="card bt-amber">
+      <h3>⚡ Volume &amp; Velocity</h3>
+      <p>High-frequency streams overwhelm naive ingest paths. Backpressure, worker pools, and adaptive sampling are mandatory.</p>
+    </div>
+    <div class="card bt-cyan">
+      <h3>🛡 Resilience Required</h3>
+      <p>Kafka outages, DB latency spikes, and validation failures must not drop data — spool locally, route to DLQ, degrade gracefully.</p>
+    </div>
+  </div>
+
+  <div class="card bt-green" style="margin-top:24px">
+    <h3>SentinelFlow's answer</h3>
+    <p>A layered pipeline — edge ingest → stream validation → time-series persistence → GraphQL Digital Twin API — with observability baked in from day one.</p>
+  </div>
+</section>
+
+<section class="slide" id="arch">
+  <span class="slide-num">03 / 07</span>
+  <div class="section-label">Architecture</div>
+  <h2 class="slide-title">Layered <span>stream processing</span></h2>
+  <p class="slide-desc">Edge adapters normalize heterogeneous inputs into a single Kafka raw topic. Stream processors validate, detect anomalies, and route to processed or DLQ topics.</p>
+
+  <div class="arch-diagram"><span class="hl">Edge Layer</span>
+  PLCs / Sensors (MQTT + Protobuf) ──► Mosquitto ──► <span class="hl2">ingestion (Go)</span>
+  OPC UA Nodes ──────────────────────► <span class="hl2">opcua-adapter (Go)</span>
+                              │
+                              ▼
+                    Kafka · <span class="hl">raw topic</span>
+                              │
+                              ▼
+              <span class="hl2">stream-processor (Go)</span>
+              validate · Z-score anomaly detect
+                    │              │
+              valid │              │ invalid / anomaly
+                    ▼              ▼
+           processed topic      <span class="hl3">DLQ topic</span>
+                    │
+                    ▼
+         <span class="hl2">persistence (TypeScript)</span>
+                    │
+            TimescaleDB + Redis
+                    │
+                    ▼
+         <span class="hl2">graphql-api (TypeScript)</span>
+              Digital Twin · Dashboards
+
+Observability: ingestion · stream-processor · persistence ──► Prometheus ──► Grafana</div>
+</section>
+
+<section class="slide" id="services">
+  <span class="slide-num">04 / 07</span>
+  <div class="section-label">Services</div>
+  <h2 class="slide-title">Five services, <span>two languages</span></h2>
+
+  <table class="stack-table">
+    <thead><tr><th>Service</th><th>Language</th><th>Responsibility</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag tg-cyan">ingestion</span></td><td>Go</td><td>MQTT listener → deserialize Protobuf → Kafka with backpressure &amp; worker pool</td></tr>
+      <tr><td><span class="tag tg-cyan">stream-processor</span></td><td>Go</td><td>Consume raw → validate schema → Z-score anomaly → processed or DLQ</td></tr>
+      <tr><td><span class="tag tg-blue">persistence</span></td><td>TypeScript</td><td>Consume processed → TimescaleDB hypertables → Redis hot cache</td></tr>
+      <tr><td><span class="tag tg-cyan">opcua-adapter</span></td><td>Go</td><td>Poll OPC UA nodes → normalize → publish to Kafka raw topic</td></tr>
+      <tr><td><span class="tag tg-blue">graphql-api</span></td><td>TypeScript</td><td>GraphQL over TimescaleDB + Redis — Digital Twin UI &amp; dashboards</td></tr>
+    </tbody>
+  </table>
+
+  <div class="g3" style="margin-top:24px">
+    <div class="card"><h3>Protobuf schema</h3><p>Shared telemetry contract in <code>api/proto/</code> — type-safe edge-to-cloud serialization.</p></div>
+    <div class="card"><h3>TimescaleDB hypertables</h3><p>Time-series optimized storage with automatic partitioning for sensor history at scale.</p></div>
+    <div class="card"><h3>Pre-provisioned observability</h3><p>Grafana dashboards and Prometheus alert rules ship under <code>deploy/observability/</code>.</p></div>
+  </div>
+</section>
+
+<section class="slide" id="flow">
+  <span class="slide-num">05 / 07</span>
+  <div class="section-label">Pipeline</div>
+  <h2 class="slide-title">From sensor to <span>Digital Twin</span></h2>
+
+  <div class="flow">
+    <div class="flow-step"><span class="si">📡</span><div class="sl">MQTT / OPC UA</div><div class="ss">Edge protocols</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><span class="si">📥</span><div class="sl">Ingest</div><div class="ss">Protobuf decode</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><span class="si">🌊</span><div class="sl">Kafka Raw</div><div class="ss">Durable stream</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><span class="si">🔍</span><div class="sl">Validate</div><div class="ss">Z-score detect</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><span class="si">💾</span><div class="sl">Persist</div><div class="ss">TimescaleDB</div></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><span class="si">🖥</span><div class="sl">GraphQL</div><div class="ss">Digital Twin</div></div>
+  </div>
+
+  <div class="g2" style="margin-top:28px">
+    <div class="card bt-cyan">
+      <h3>Quick start</h3>
+      <pre style="background:#030810;border:1px solid var(--border);border-radius:8px;padding:14px;font-family:var(--mono);font-size:.72rem;margin-top:10px;color:#cbd5e1">docker-compose up -d
+
+cd services/ingestion && go run main.go
+cd services/stream-processor && go run main.go
+cd services/persistence && npm start</pre>
+    </div>
+    <div class="card bt-blue">
+      <h3>Observability (immediate)</h3>
+      <p style="margin-bottom:8px"><strong>Grafana</strong> — localhost:3000 (admin / admin)</p>
+      <p><strong>Prometheus</strong> — localhost:9090</p>
+      <p style="margin-top:10px;font-size:.78rem;color:var(--muted)">Dashboards and alert rules pre-provisioned on compose up.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="reliability">
+  <span class="slide-num">06 / 07</span>
+  <div class="section-label">Reliability</div>
+  <h2 class="slide-title">Built for <span>production hiccups</span></h2>
+  <p class="slide-desc">SentinelFlow assumes infrastructure fails. Every layer has a fallback path — no silent data loss at the edge.</p>
+
+  <div class="reliability-grid">
+    <div class="rel-item">
+      <span class="rel-icon">💾</span>
+      <div><h4>Local spooling (BadgerDB)</h4><p>Kafka outage? Edge data spools locally until the broker recovers — zero loss.</p></div>
+    </div>
+    <div class="rel-item">
+      <span class="rel-icon">📋</span>
+      <div><h4>Dead-letter queue</h4><p>Validation failures and anomalies route to a replayable DLQ — observable and recoverable.</p></div>
+    </div>
+    <div class="rel-item">
+      <span class="rel-icon">⚡</span>
+      <div><h4>Redis fallback</h4><p>When TimescaleDB write latency spikes, hot keys serve from Redis cache.</p></div>
+    </div>
+    <div class="rel-item">
+      <span class="rel-icon">🔄</span>
+      <div><h4>Adaptive sampling &amp; circuit breakers</h4><p>Under sustained load, sampling adapts and breakers prevent cascade failures.</p></div>
+    </div>
+    <div class="rel-item">
+      <span class="rel-icon">🛑</span>
+      <div><h4>Graceful shutdown</h4><p>In-flight messages drain cleanly on SIGTERM — no orphaned batches.</p></div>
+    </div>
+    <div class="rel-item">
+      <span class="rel-icon">📊</span>
+      <div><h4>CI on every push</h4><p>Go lint + test for ingestion &amp; stream-processor. TS lint + test for persistence &amp; graphql-api.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide slide-final" id="summary">
+  <span class="slide-num">07 / 07</span>
+  <div class="section-label">Summary</div>
+  <h2 class="final-h2">Industrial-grade telemetry<br>for the factory floor</h2>
+  <p style="color:var(--muted);max-width:580px;font-size:.95rem">
+    High-frequency ingest, real-time validation, time-series persistence, and a GraphQL Digital Twin API —
+    with the reliability patterns production IIoT demands.
+  </p>
+  <div class="pill-row" style="margin-top:32px">
+    <span class="pill">github.com/vgandhi1/SentinelFlow</span>
+    <span class="pill">docker-compose up -d</span>
+    <span class="pill">Schema registry · React UI on roadmap</span>
+  </div>
+  <a class="final-link" href="https://github.com/vgandhi1/SentinelFlow" target="_blank" rel="noopener">View Repository →</a>
+</section>
+
+<script>
+const sections=document.querySelectorAll('.slide[id]');
+const links=document.querySelectorAll('.nav-links a');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+e.target.id));
+    }
+  });
+},{rootMargin:'-40% 0px -55% 0px'});
+sections.forEach(s=>obs.observe(s));
+document.addEventListener('keydown',e=>{
+  const ids=[...sections].map(s=>s.id);
+  const idx=ids.findIndex(id=>document.getElementById(id).getBoundingClientRect().top>=-100);
+  if(e.key==='ArrowDown'||e.key==='PageDown'){e.preventDefault();document.getElementById(ids[Math.min(idx+1,ids.length-1)]).scrollIntoView({behavior:'smooth'});}
+  if(e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();document.getElementById(ids[Math.max(idx-1,0)]).scrollIntoView({behavior:'smooth'});}
+});
+</script>
+</body>
+</html>
