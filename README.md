@@ -1,5 +1,7 @@
 # SentinelFlow
 
+> **⚠️ Archived (2026-06-28)** — This repository is read-only. Use **[edge-telemetry-plane](https://github.com/vgandhi1/edge-telemetry-plane)** for edge→cloud IIoT ingest and **[aegis](https://github.com/vgandhi1/aegis)** for manufacturing correlation. See [ARCHIVED.md](./ARCHIVED.md).
+
 **Industrial-grade IIoT telemetry platform for factory-floor monitoring at scale.**
 
 SentinelFlow ingests high-frequency sensor data from thousands of PLCs and OPC UA nodes, validates and enriches it in real time, and serves it through a GraphQL API powering Digital Twin dashboards — all with sub-second latency and graceful degradation when infrastructure hiccups.
